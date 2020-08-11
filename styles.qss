@@ -1,0 +1,29 @@
+#MainWindow{
+    background-color: rgb(255, 255, 255);
+}
+QPushButton#pushButton{
+    background-color: rgb(40, 167, 69);
+    color: rgb(255, 255, 255);
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+    border:none;
+}
+QPushButton#pushButton::hover{
+    background-color: rgb(206, 226, 211);
+    color: rgb(40, 167, 69);
+}
+QToolButton#changeSavePathToolButton{
+    background-color: rgb(40, 167, 69);
+    color: rgb(255, 255, 255);
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:5px;
+    padding-bottom:5px;
+    border:none;
+}
+QToolButton#changeSavePathToolButton:hover{
+    background-color: rgb(206, 226, 211);
+    color: rgb(40, 167, 69);
+}
