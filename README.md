@@ -3,7 +3,7 @@ Qt Based GUI front end for youtube-dl.exe
 
 Currently you can only download in .mp4 format
 
-![Image of Yaktocat](https://github.com/images/yaktocat.png) 
+![Image of Kyoutubedownloader while downloading](https://github.com/geekmors/KyoutubeDownloader/blob/master/preview.jpg?raw=true) 
 
 
 ## TODO:
