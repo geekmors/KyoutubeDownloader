@@ -7,8 +7,7 @@ Currently you can only download in .mp4 format
 
 
 ## TODO:
-- add download format option
-- add youtube-dl.exe auto update
-- add download progress bar
-- add main window icon
-
+- [ ] add download format option
+- [ ] add youtube-dl.exe auto update
+- [ ] add download progress bar
+- [ ] add main window icon
