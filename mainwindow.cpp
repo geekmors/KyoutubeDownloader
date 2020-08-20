@@ -7,7 +7,8 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QMovie>
-
+#include <QDesktopServices>
+#include <QUrl>
 // Utility Function for formating savePath text eg. "Save Path: /some/path"
 QString getNewLabelText(QString newSavePath){
     return "Save Path: "+newSavePath;
@@ -26,14 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     ui->pushButton->setCursor(Qt::PointingHandCursor);
+    ui->openDownloadFolderButton->setCursor(Qt::PointingHandCursor);
     // loads animation to be used while downloading video - loading animation
-    ui->loadingLabel->setMovie(new QMovie(":/img/loading.gif"));
+    ui->loadingLabel->setMovie(new QMovie(":/img/loading-gif.gif"));
     ui->loadingLabel->hide();
 
     ui->changeSavePathToolButton->setCursor(Qt::PointingHandCursor);
-    ui->savePath_label->setText( getNewLabelText(this->video_save_path) );
-
-
+    ui->statusbar->showMessage( getNewLabelText(this->video_save_path) );
 
     connect(this->proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(onProcessFinish(int, QProcess::ExitStatus)));
     connect(this->proc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
@@ -97,11 +97,9 @@ MainWindow * MainWindow::showError(QString error){
 }
 // begins the download process
 MainWindow * MainWindow::downloadProcessStart(QString videoURL){
-    ui->statusbar->showMessage(this->youtube_dl, 3000);
 
     //command: youtube-dl.exe ${youtubeVideoURL} -o ${videoSavePath}/videoTitle.mp4
     this->proc->start(this->youtube_dl, {videoURL, "-o", this->video_save_path+"/%(title)s.mp4"});
-
     return this;
 }
 
@@ -180,5 +178,10 @@ void MainWindow::on_changeSavePathToolButton_clicked(){
 
     this->video_save_path = newSavePath == "" ? this->video_save_path : newSavePath;
     this->saveSettings();
-    ui->savePath_label->setText( getNewLabelText(this->video_save_path) );
+    ui->statusbar->showMessage( getNewLabelText(this->video_save_path) );
+}
+
+void MainWindow::on_openDownloadFolderButton_clicked(){
+    QString url = "file:///"+this->video_save_path;
+    QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
 }

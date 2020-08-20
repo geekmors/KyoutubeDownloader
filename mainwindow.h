@@ -27,6 +27,8 @@ private slots:
     void onProcessStart();
     void on_changeSavePathToolButton_clicked();
 
+    void on_openDownloadFolderButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     MainWindow * disableUIInputs(bool disable);

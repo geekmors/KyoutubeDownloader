@@ -3,6 +3,11 @@
         <file>styles.qss</file>
     </qresource>
     <qresource prefix="/img">
-        <file>loading.gif</file>
+        <file>loading-gif.gif</file>
+        <file>openFolder.png</file>
+        <file>openFolder-hover.png</file>
+        <file>savePathIcon.png</file>
+        <file>savePathIcon-hover.png</file>
+        <file>app-logo.png</file>
     </qresource>
 </RCC>
