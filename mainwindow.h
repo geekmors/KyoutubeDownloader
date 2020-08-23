@@ -24,6 +24,7 @@ private slots:
     void on_pushButton_clicked();
     void onProcessError(QProcess::ProcessError error);
     void onProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
+    void onProcessOutputStart();
     void onProcessStart();
     void on_changeSavePathToolButton_clicked();
 

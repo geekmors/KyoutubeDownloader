@@ -13,7 +13,19 @@
 QString getNewLabelText(QString newSavePath){
     return "Save Path: "+newSavePath;
 }
-
+// Utility for getting pregress from process output string;
+int getProgressFromOutput(QString progressOutput){
+    //eg. output: "\r[download]  65.4% of 38.07MiB at  4.09MiB/s ETA 00:03 "
+    //if the output contains a percent sign then we can assume that the output contains the
+    // progress as percentage
+    if(progressOutput.contains("%")){
+        QStringList progressTextListRaw = progressOutput.split("%")[0].split(" ");
+        progressTextListRaw = progressTextListRaw[progressTextListRaw.length() - 1].split(".");
+        // converts progress string to int before returning
+        return progressTextListRaw[0].toInt();
+    }
+    return 0;
+}
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -27,18 +39,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     ui->pushButton->setCursor(Qt::PointingHandCursor);
-    ui->openDownloadFolderButton->setCursor(Qt::PointingHandCursor);
-    // loads animation to be used while downloading video - loading animation
-    ui->loadingLabel->setMovie(new QMovie(":/img/loading-gif.gif"));
-    ui->loadingLabel->hide();
-
+    ui->openDownloadFolderButton->setCursor(Qt::PointingHandCursor);    
+    ui->DownloadProgressBar->hide();
     ui->changeSavePathToolButton->setCursor(Qt::PointingHandCursor);
     ui->statusbar->showMessage( getNewLabelText(this->video_save_path) );
 
     connect(this->proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(onProcessFinish(int, QProcess::ExitStatus)));
     connect(this->proc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
     connect(this->proc, SIGNAL(started()), this, SLOT(onProcessStart()));
-
+    connect(this->proc, SIGNAL(readyReadStandardOutput()),this,  SLOT(onProcessOutputStart()));
 }
 
 MainWindow::~MainWindow(){
@@ -103,10 +112,10 @@ MainWindow * MainWindow::downloadProcessStart(QString videoURL){
     return this;
 }
 
-// ends the download process by stoping the loading animation and re-enabling the window inputs.
+// ends the download process by hiding the progressbar and re-enabling the window inputs.
 MainWindow * MainWindow::downloadProcessEnd(){
-    ui->loadingLabel->movie()->stop();
-    ui->loadingLabel->hide();
+    ui->DownloadProgressBar->hide();
+    ui->DownloadProgressBar->setValue(0);
     ui->lineEdit->clear();
     return this->disableUIInputs(false);
 }
@@ -161,10 +170,16 @@ void MainWindow::onProcessFinish(int exitCode, QProcess::ExitStatus exitStatus){
     else
         this->showError("An Error Occurred while downloading the video");
 }
+// output start handler for QProcess::readyReadStandardOutput() signal
+void MainWindow::onProcessOutputStart(){
+    QByteArray output;
+    output = this->proc->readAllStandardOutput();
+    int progress = getProgressFromOutput( QString::fromStdString( output.toStdString() ) );
+    ui->DownloadProgressBar->setValue(progress);
+}
 // started handler for QProcess::started() signal
 void MainWindow::onProcessStart(){
-    ui->loadingLabel->show();
-    ui->loadingLabel->movie()->start();
+    ui->DownloadProgressBar->show();
 }
 
 //changeSavePathToolButton click signal handler

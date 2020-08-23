@@ -1,13 +1,12 @@
 <RCC>
     <qresource lang="qss" prefix="/styles">
-        <file>styles.qss</file>
+        <file>assets/styles.qss</file>
     </qresource>
     <qresource prefix="/img">
-        <file>loading-gif.gif</file>
-        <file>openFolder.png</file>
-        <file>openFolder-hover.png</file>
-        <file>savePathIcon.png</file>
-        <file>savePathIcon-hover.png</file>
-        <file>app-logo.png</file>
+        <file>assets/app-logo.png</file>
+        <file>assets/openFolder.png</file>
+        <file>assets/openFolder-hover.png</file>
+        <file>assets/savePathIcon.png</file>
+        <file>assets/savePathIcon-hover.png</file>
     </qresource>
 </RCC>

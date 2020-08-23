@@ -16,17 +16,34 @@ QPushButton#pushButton::hover{
 }
 QToolButton#changeSavePathToolButton{
     background-color: none;
-	image: url(:/img/savePathIcon.png);
+	image: url(:/img/assets/savePathIcon.png);
     border:none;
 }
 #openDownloadFolderButton{
 	background-color: none;
     border:none;
-	image: url(:/img/openFolder.png);
+	image: url(:/img/assets/openFolder.png);
 }
 #openDownloadFolderButton:hover{
-	image: url(:/img/openFolder-hover.png);
+	image: url(:/img/assets/openFolder-hover.png);
 }
 QToolButton#changeSavePathToolButton:hover{    
-	image: url(:/img/savePathIcon-hover.png);    
+	image: url(:/img/assets/savePathIcon-hover.png);    
+}
+#DownloadProgressBar{
+    text-align:center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(113, 113, 113);
+    font-weight: bold;
+    border: none;
+}
+#DownloadProgressBar::chunk{
+    background-color: rgb(40, 167, 69);
+}
+#lineEdit{
+    border-top: none;
+    border-left: none;
+    border-right:none;
+    border-bottom: 2px solid rgb(40, 167, 69);
+    padding-bottom: 5px;
 }

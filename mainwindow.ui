@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>500</width>
-    <height>310</height>
+    <height>260</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>500</width>
-    <height>310</height>
+    <height>260</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>500</width>
-    <height>310</height>
+    <height>260</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="KyoutubeDownloader_rc.qrc">
-    <normaloff>:/img/app-logo.png</normaloff>:/img/app-logo.png</iconset>
+    <normaloff>:/img/assets/app-logo.png</normaloff>:/img/assets/app-logo.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -36,10 +36,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>10</y>
-      <width>461</width>
-      <height>161</height>
+      <width>481</width>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -153,32 +153,17 @@
      </item>
     </layout>
    </widget>
-   <widget class="QLabel" name="loadingLabel">
+   <widget class="QProgressBar" name="DownloadProgressBar">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>180</y>
-      <width>100</width>
-      <height>100</height>
+      <x>10</x>
+      <y>200</y>
+      <width>479</width>
+      <height>21</height>
      </rect>
     </property>
-    <property name="minimumSize">
-     <size>
-      <width>100</width>
-      <height>100</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>100</width>
-      <height>100</height>
-     </size>
-    </property>
-    <property name="text">
-     <string>some test</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
+    <property name="value">
+     <number>0</number>
     </property>
    </widget>
   </widget>

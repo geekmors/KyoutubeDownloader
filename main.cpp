@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
     MainWindow Window;
     Window.setWindowTitle("KYoutube .mp4 Downloader");
 
-    QFile styles(":/styles/styles.qss");
+    QFile styles(":/styles/assets/styles.qss");
 
     if(styles.open(QFile::ReadOnly)){
         QString sstyles = QLatin1String( styles.readAll() );
