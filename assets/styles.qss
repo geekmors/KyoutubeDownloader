@@ -1,7 +1,7 @@
 #MainWindow{
     background-color: rgb(255, 255, 255);
 }
-QPushButton#pushButton{
+QPushButton#DownloadButton{
     background-color: rgb(40, 167, 69);
     color: rgb(255, 255, 255);
     padding-left:10px;
@@ -10,7 +10,7 @@ QPushButton#pushButton{
     padding-bottom:5px;
     border:none;
 }
-QPushButton#pushButton::hover{
+QPushButton#DownloadButton::hover{
     background-color: rgb(206, 226, 211);
     color: rgb(40, 167, 69);
 }

@@ -21,14 +21,13 @@ public:
     MainWindow * setYoutube_dl(QString program);
 
 private slots:
-    void on_pushButton_clicked();
     void onProcessError(QProcess::ProcessError error);
     void onProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
     void onProcessOutputStart();
     void onProcessStart();
     void on_changeSavePathToolButton_clicked();
-
     void on_openDownloadFolderButton_clicked();
+    void on_DownloadButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -1,31 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "string"
-#include <iostream>
 #include <QDebug>
 #include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
-#include <QMovie>
 #include <QDesktopServices>
 #include <QUrl>
-// Utility Function for formating savePath text eg. "Save Path: /some/path"
-QString getNewLabelText(QString newSavePath){
-    return "Save Path: "+newSavePath;
-}
-// Utility for getting pregress from process output string;
-int getProgressFromOutput(QString progressOutput){
-    //eg. output: "\r[download]  65.4% of 38.07MiB at  4.09MiB/s ETA 00:03 "
-    //if the output contains a percent sign then we can assume that the output contains the
-    // progress as percentage
-    if(progressOutput.contains("%")){
-        QStringList progressTextListRaw = progressOutput.split("%")[0].split(" ");
-        progressTextListRaw = progressTextListRaw[progressTextListRaw.length() - 1].split(".");
-        // converts progress string to int before returning
-        return progressTextListRaw[0].toInt();
-    }
-    return 0;
-}
+
+//custom utility namespace with utitlity functions, namespace is for readability ;p
+//namespace KUtil
+#include "kutil.cpp"
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -38,12 +23,14 @@ MainWindow::MainWindow(QWidget *parent)
         ->setProc(new QProcess(this));
 
     ui->setupUi(this);
-    ui->pushButton->setCursor(Qt::PointingHandCursor);
-    ui->openDownloadFolderButton->setCursor(Qt::PointingHandCursor);    
-    ui->DownloadProgressBar->hide();
+    ui->DownloadButton->setCursor(Qt::PointingHandCursor);
+    ui->openDownloadFolderButton->setCursor(Qt::PointingHandCursor);
     ui->changeSavePathToolButton->setCursor(Qt::PointingHandCursor);
-    ui->statusbar->showMessage( getNewLabelText(this->video_save_path) );
+    ui->DownloadProgressBar->hide();
+    //set status bar text with default save path
+    ui->statusbar->showMessage( KUtil::getNewLabelText(this->video_save_path) );
 
+    //init signals and slots connections
     connect(this->proc, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(onProcessFinish(int, QProcess::ExitStatus)));
     connect(this->proc, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(onProcessError(QProcess::ProcessError)));
     connect(this->proc, SIGNAL(started()), this, SLOT(onProcessStart()));
@@ -87,13 +74,6 @@ MainWindow * MainWindow::showSuccess(QString message, QString title){
     messageBox->exec();
     return this;
 }
-//disables any inputs while video downloads
-MainWindow * MainWindow::disableUIInputs(bool disable){
-
-    ui->pushButton->setDisabled(disable);
-    ui->lineEdit->setDisabled(disable);
-    return this;
-}
 // shows an error dialogue
 MainWindow * MainWindow::showError(QString error){
     QMessageBox * messageBox = new QMessageBox(this);
@@ -104,25 +84,29 @@ MainWindow * MainWindow::showError(QString error){
     messageBox->exec();
     return this->downloadProcessEnd();
 }
+//disables any inputs while video downloads
+MainWindow * MainWindow::disableUIInputs(bool disable){
+    ui->DownloadButton->setDisabled(disable);
+    ui->lineEdit->setDisabled(disable);
+    return this;
+}
 // begins the download process
 MainWindow * MainWindow::downloadProcessStart(QString videoURL){
-
     //command: youtube-dl.exe ${youtubeVideoURL} -o ${videoSavePath}/videoTitle.mp4
-    this->proc->start(this->youtube_dl, {videoURL, "-o", this->video_save_path+"/%(title)s.mp4"});
+    this->proc->start( this->youtube_dl, { videoURL, "-o", this->video_save_path+"/%(title)s.mp4" } );
     return this;
 }
 
 // ends the download process by hiding the progressbar and re-enabling the window inputs.
 MainWindow * MainWindow::downloadProcessEnd(){
     ui->DownloadProgressBar->hide();
-    ui->DownloadProgressBar->setValue(0);
     ui->lineEdit->clear();
-    return this->disableUIInputs(false);
+    return this->disableUIInputs( false );
 }
 
 // Utility to get a better defined error to show when the download command fails.
 QString MainWindow::getProcessErrorAsString(QProcess::ProcessError error){
-    switch (error) {
+    switch ( error ) {
         case 0:
         return QString("Failed to start");
         break;
@@ -144,41 +128,39 @@ QString MainWindow::getProcessErrorAsString(QProcess::ProcessError error){
 }
 
 //Download button handler for QButton::clicked() signal
-void MainWindow::on_pushButton_clicked(){
-
+void MainWindow::on_DownloadButton_clicked(){
     QString videoUrl = ui->lineEdit->text();
-    this->disableUIInputs(true);
+    this->disableUIInputs( true );
 
-    if(videoUrl.contains("https://www.youtube.com/watch?v="))
-        this->downloadProcessStart(videoUrl);
+    if( videoUrl.contains( "https://www.youtube.com/watch?v=" ) )
+        this->downloadProcessStart( videoUrl );
     else
-        this->showError("Download Error Occurred : "+ videoUrl +" "+ "not a valid youtube URL");
+        this->showError( "Download Error Occurred : " + videoUrl + " " + "not a valid youtube URL" );
 
 }
 // error handler for QProcess::started() signal
 void MainWindow::onProcessError(QProcess::ProcessError error){
-    QString errorToString = this->getProcessErrorAsString(error);
-    this->showError("Download Error Occurred :"+errorToString);
+    QString errorToString = this->getProcessErrorAsString( error );
+    this->showError( "Download Error Occurred :" + errorToString );
 }
 // finished handler for QProcess::finished() signal
 void MainWindow::onProcessFinish(int exitCode, QProcess::ExitStatus exitStatus){
 
-    if(!exitStatus && exitCode==0){
+    if(!exitStatus && exitCode == 0)
         this->showSuccess("Download Has Finished SuccessFully!", "Download Finished")
-            ->downloadProcessEnd();
-    }
+            ->downloadProcessEnd();  
     else
         this->showError("An Error Occurred while downloading the video");
 }
 // output start handler for QProcess::readyReadStandardOutput() signal
 void MainWindow::onProcessOutputStart(){
-    QByteArray output;
-    output = this->proc->readAllStandardOutput();
-    int progress = getProgressFromOutput( QString::fromStdString( output.toStdString() ) );
-    ui->DownloadProgressBar->setValue(progress);
+    QByteArray processOutput = this->proc->readAllStandardOutput();
+    int progress = KUtil::getProgressFromOutput( QString::fromStdString( processOutput.toStdString() ) );
+    ui->DownloadProgressBar->setValue( progress );
 }
 // started handler for QProcess::started() signal
 void MainWindow::onProcessStart(){
+    ui->DownloadProgressBar->setValue(0);
     ui->DownloadProgressBar->show();
 }
 
@@ -193,10 +175,11 @@ void MainWindow::on_changeSavePathToolButton_clicked(){
 
     this->video_save_path = newSavePath == "" ? this->video_save_path : newSavePath;
     this->saveSettings();
-    ui->statusbar->showMessage( getNewLabelText(this->video_save_path) );
+    ui->statusbar->showMessage( KUtil::getNewLabelText( this->video_save_path ) );
 }
 
 void MainWindow::on_openDownloadFolderButton_clicked(){
     QString url = "file:///"+this->video_save_path;
-    QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
+    QDesktopServices::openUrl( QUrl(url, QUrl::TolerantMode) );
 }
+
